@@ -1,0 +1,180 @@
+﻿@model PaginatedList<Usuario>
+@{
+    ViewData["Title"] = "ListarUsuarios";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Lista de Usuarios</h1>
+
+<style>
+    .d-none {
+        display: none;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 20px;
+        background-color: #f8d7da;
+        color: #721c24;
+        margin-top: 10px;
+        border: 1px solid #f5c6cb;
+        border-radius: 4px;
+    }
+</style>
+
+<div class="form-group">
+    <div class="row">
+        <div class="col-md-3">
+            <label for="opcion">Buscar por</label>
+            <select class="form-control" id="opcion">
+                <option value="-2">Listar todo</option>
+                <option value="1">Nombre(s)</option>
+                <option value="2">Número de documento</option>
+                <option value="3">Email</option>
+                <option value="4">Nacionalidad</option>
+            </select>
+        </div>
+        <div class="col-md-5 d-none" id="buscarFields">
+            <label>&nbsp;</label>
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Ingresar criterio de búsqueda" id="buscarCriterio" />
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="button" id="buscarBtn">Buscar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<div class="table-responsive-sm d-none d-lg-block">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr class="table-primary">
+                <th>Acciones</th>
+                <th>Nombre</th>
+                <th>Número de documento</th>
+                <th>Email</th>
+                <th>Establecimiento</th>
+                <th>Rol</th>
+                <th>Estado</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var usuario in Model.Items)
+            {
+                <tr data-id="@usuario.IdUsuario">
+                    <td>
+                        <a asp-action="EditarUsuario" asp-route-id="@usuario.IdUsuario" class="btn btn-outline-primary">
+                            <i class="fa-regular fa-pen-to-square"></i> Revisar
+                        </a>
+
+                    </td>
+                    <td data-search-type="1">@usuario.NombresUsuario @usuario.ApellidosUsuario</td>
+                    <td data-search-type="2">@usuario.CiUsuario</td>
+                    <td data-search-type="3">@usuario.EmailUsuario</td>
+                    <td data-search-type="4">@usuario.Establecimiento?.DireccionEstablecimiento</td>
+                    <td>@usuario.Perfil?.NombrePerfil</td>
+                    <td>
+                        <form asp-action="CambiarEstadoUsuario" method="post" asp-route-ciUsuario="@usuario.CiUsuario" style="display:inline;">
+                            <button type="submit" class="btn @(usuario.EstadoUsuario == 1 ? "btn-outline-warning" : "btn-outline-success")">
+                                @(usuario.EstadoUsuario == 1 ? "Desactivar" : "Activar")
+                            </button>
+                        </form>
+
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div id="noResults" class="no-results d-none">
+        No se encontraron resultados. <button class="btn btn-outline-primary" onclick="crearNuevo()"><i class="fa fa-plus"></i> Crear nuevo</button>
+    </div>
+</div>
+
+<div class="card-columns d-lg-none">
+    @foreach (var usuario in Model.Items)
+    {
+        <div class="card">
+            <div class="card-body" data-id="@usuario.IdUsuario">
+                <h5 class="card-title" data-search-type="1">@usuario.NombresUsuario @usuario.ApellidosUsuario </h5>
+                <p class="card-text" data-search-type="2"><strong>Número de documento: </strong>@usuario.CiUsuario </p>
+                <p class="card-text" data-search-type="3"><strong>Email: </strong>@usuario.EmailUsuario </p>
+                <p class="card-text" data-search-type="4"><strong>Establecimiento : </strong>@usuario.Establecimiento?.DescripcionEstablecimiento </p>
+                <p class="card-text"><strong>Rol: </strong>@usuario.Perfil?.NombrePerfil</p>
+                <a asp-action="EditarUsuario" asp-route-id="@usuario.IdUsuario" class="btn btn-outline-primary">
+                    <i class="fa-regular fa-pen-to-square"></i> Revisar
+                </a>
+                <form asp-action="CambiarEstadoUsuario" method="post" asp-route-ciUsuario="@usuario.CiUsuario" style="display:inline;">
+                    <button type="submit" class="btn @(usuario.EstadoUsuario == 1 ? "btn-outline-warning" : "btn-outline-success")">
+                        @(usuario.EstadoUsuario == 1 ? "Desactivar" : "Activar")
+                    </button>
+                </form>
+            
+            </div>
+        </div>
+    }
+</div>
+<a asp-action="CrearUsuario" asp-controller="User" class="btn btn-outline-primary">
+    <i class="fa fa-plus"></i> Crear Nuevo
+</a>
+<!-- Aquí empieza la paginación -->
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @if(Model.PageNumber == 1) {
+        <text>disabled</text>
+}">
+            <a class="page-link" href="@Url.Action("ListarUsuarios", new { page = Model.PageNumber - 1 })">Anterior</a>
+        </li>
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @if(i == Model.PageNumber) {
+        <text>active</text>
+}">
+                <a class="page-link" href="@Url.Action("ListarUsuarios", new { page = i })">@i</a>
+            </li>
+        }
+        <li class="page-item @if(Model.PageNumber == Model.TotalPages) {
+        <text>disabled</text>
+}">
+            <a class="page-link" href="@Url.Action("ListarUsuarios", new { page = Model.PageNumber + 1 })">Siguiente</a>
+        </li>
+    </ul>
+</nav>
+<!-- Aquí termina la paginación -->
+</div>
+
+
+@section Scripts {
+    <script src="~/js/searchFunctions.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var successMessage = '@TempData["SuccessMessage"]';
+            var errorMessage = '@TempData["ErrorMessage"]';
+
+            if (successMessage) {
+                Swal.fire({
+                    title: 'Éxito',
+                    text: successMessage,
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+
+            if (errorMessage) {
+                Swal.fire({
+                    title: 'Error',
+                    text: errorMessage,
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+        });
+    </script>
+}
+

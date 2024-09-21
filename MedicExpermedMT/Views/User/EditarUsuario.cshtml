@@ -1,0 +1,333 @@
+﻿@model UsuarioViewModel
+@{
+    ViewData["Title"] = "EditarUsuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Actualizar Usuario</h1>
+
+<br />
+
+<form asp-action="EditarUsuario" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="IdUsuario"  />
+    <div class="form-group row g-3">
+
+        <div class="col-sm-3">
+            <label class="form-label" asp-for="PerfilId">Rol Usuario</label>
+            <select asp-for="PerfilId" class="form-select">
+                <option value="">Seleccione</option>
+                @foreach (var perfil in ViewBag.Perfiles)
+                {
+                    <option value="@perfil.IdPerfil">@perfil.NombrePerfil</option>
+                }
+            </select>
+            <span asp-validation-for="PerfilId" class="text-danger"></span>
+        </div>
+
+
+        <!-- Este contenedor mostrará los resultados de búsqueda -->
+        <div class="list-group" id="perfilResults" style="max-height: 100px; overflow-y: auto;"></div>
+
+        <div class="col-sm-3">
+            <label class="form-label" asp-for="CiUsuario">Número de Documento</label>
+            <input asp-for="CiUsuario" class="form-control" />
+            <span asp-validation-for="CiUsuario" class="text-danger"></span>
+        </div>
+
+        <div class="col-sm-3">
+            <label class="form-label" asp-for="ApellidosUsuario">Apellidos</label>
+            <input asp-for="ApellidosUsuario" class="form-control" />
+            <span asp-validation-for="ApellidosUsuario" class="text-danger"></span>
+        </div>
+
+        <div class="col-sm-3">
+            <label class="form-label" asp-for="NombresUsuario">Nombres</label>
+            <input asp-for="NombresUsuario" class="form-control" />
+            <span asp-validation-for="NombresUsuario" class="text-danger"></span>
+        </div>
+
+
+        <div class="col-sm-3">
+            <label for="autocomplete" class="form-label">Dirección Usuario</label>
+            <div class="input-group mb-3">
+                <input asp-for="DireccionUsuario" id="autocomplete" class="form-control" placeholder="Escribe tu dirección" aria-label="Dirección Usuario">
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-outline-primary" id="btnMap" data-bs-toggle="modal" data-bs-target="#mapModal">
+                        <i class="fa fa-map-marker"></i>
+                    </button>
+                </div>
+            </div>
+            <span asp-validation-for="DireccionUsuario" class="text-danger"></span>
+        </div>
+
+        <!-- Lista de sugerencias -->
+        <ul id="suggestions" class="list-group" style="display: none; position: absolute; z-index: 1000; width: calc(100% - 32px); max-height: 200px; overflow-y: auto; padding: 0; margin: 0; border: 1px solid #ddd; background-color: #fff;"></ul>
+
+
+
+        <div class="col-sm-3">
+            <label class="form-label" asp-for="CodigoSenecyt">Codigo Senecyt</label>
+            <input class="form-control" type="text" asp-for="CodigoSenecyt" />
+        </div>
+
+
+        <div class="col-sm-3">
+            <label class="form-label" asp-for="TelefonoUsuario">Teléfono</label>
+            <input asp-for="TelefonoUsuario" class="form-control" />
+            <span asp-validation-for="TelefonoUsuario" class="text-danger"></span>
+        </div>
+
+        <div class="col-sm-3">
+            <label class="form-label" asp-for="EmailUsuario">Email</label>
+            <input asp-for="EmailUsuario" class="form-control" type="email" />
+            <span asp-validation-for="EmailUsuario" class="text-danger"></span>
+        </div>
+
+        <div class="col-sm-3">
+            <label class="form-label" asp-for="EspecialidadId">Especialidad</label>
+            <select asp-for="EspecialidadId" class="form-select">
+                <option value="">Seleccione</option>
+                @foreach (var especialidad in ViewBag.Especialidades)
+                {
+                    <option value="@especialidad.IdEspecialidad">@especialidad.NombreEspecialidad</option>
+                }
+            </select>
+            <span asp-validation-for="EspecialidadId" class="text-danger"></span>
+        </div>
+
+        <div class="col-sm-3">
+            <label class="form-label" asp-for="EstablecimientoId">Establecimiento</label>
+            <select asp-for="EstablecimientoId" class="form-select">
+                <option value="">Seleccione</option>
+                @foreach (var establecimiento in ViewBag.Establecimientos)
+                {
+                    <option value="@establecimiento.IdEstablecimiento">@establecimiento.DescripcionEstablecimiento</option>
+                }
+            </select>
+            <span asp-validation-for="EstablecimientoId" class="text-danger"></span>
+        </div>
+
+        <div class="col-sm-3">
+            <label class="form-label" asp-for="LoginUsuario">Login</label>
+            <input asp-for="LoginUsuario" class="form-control" />
+            <span asp-validation-for="LoginUsuario" class="text-danger"></span>
+        </div>
+
+        <div class="col-sm-3">
+            <label class="form-label" asp-for="ClaveUsuario">Clave</label>
+            <input asp-for="ClaveUsuario" class="form-control" placeholder="Coloque su clave anterior o cambiela si desea" />
+            <span asp-validation-for="ClaveUsuario" class="text-danger"></span>
+        </div>
+
+        <div class="col-sm-3 d-none">
+            <label class="form-label" asp-for="EstadoUsuario">Activo</label>
+            <input asp-for="EstadoUsuario" value="1" class="form-control" readonly />
+            <span asp-validation-for="EstadoUsuario" class="text-danger"></span>
+        </div>
+
+        <div class="col-sm-2">
+            <label class="form-label" asp-for="CodigoUsuario">Código</label>
+            <input asp-for="CodigoUsuario" class="form-control" />
+            @*             <span asp-validation-for="CodigoUsuario" class="text-danger"></span> *@
+        </div>
+
+        <div class="col-sm-3">
+            <label asp-for="CodigoqrUsuario" class="form-label">Código QR</label>
+            <input class="form-control" asp-for="CodigoqrUsuario" type="file" id="codigoqr_usuario" accept=".jpeg,.jpg,.png">
+            <img id="previewCodigoqr" src="#" alt="Vista previa Código QR" class="img-thumbnail mt-2" style="display:none; max-width: 100px;" />
+        </div>
+
+        <div class="col-sm-3">
+            <label asp-for="FirmadigitalUsuario" class="form-label">Firma Electrónica</label>
+            <input class="form-control" asp-for="FirmadigitalUsuario" type="file" id="firmadigital_usuario" accept=".jpeg,.jpg,.png">
+            <img id="previewFirma" src="#" alt="Vista previa Firma" class="img-thumbnail mt-2" style="display:none; max-width: 100px; max-height: 100px " />
+        </div>
+    </div>
+    <br />
+
+    <div id="camp">
+        Todos los campos son obligatorios
+    </div>
+    <br />
+
+    <div class="form-group">
+        <div class="btn-group">
+            <button type="submit" class="btn btn-outline-primary" style="border-radius:15px"><i class="fas fa-edit"></i> Actualizar</button>
+
+            <a asp-action="ListarUsuarios" class="btn btn-outline-warning" style="margin-left:5px; border-radius: 15px"> <i class=" fa fa-undo"></i>  Volver a la lista</a>
+        </div>
+    </div>
+
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script src="~/js/searchFunctions.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Mostrar mensajes de éxito o error
+            var successMessage = '@TempData["SuccessMessage"]';
+            var errorMessage = '@TempData["ErrorMessage"]';
+
+            if (successMessage) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Éxito',
+                    text: successMessage
+                });
+            }
+
+            if (errorMessage) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMessage
+                });
+            }
+
+            // Función para mostrar la vista previa de la imagen
+            function readURL(input, previewId) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $(previewId).attr('src', e.target.result);
+                        $(previewId).show();
+                    }
+
+                    reader.readAsDataURL(input.files[0]); // Convierte la imagen a una URL base64
+                }
+            }
+
+            // Asocia la función de vista previa a los campos de archivo
+            $("#codigoqr_usuario").change(function () {
+                readURL(this, '#previewCodigoqr');
+            });
+
+            $("#firmadigital_usuario").change(function () {
+                readURL(this, '#previewFirma');
+            });
+        });
+    </script>
+    <script>
+        var map;
+        var marker;
+
+        // Inicializar el mapa cuando el modal esté visible
+        document.getElementById('mapModal').addEventListener('shown.bs.modal', function () {
+            if (!map) {
+                map = L.map('map').setView([51.505, -0.09], 13); // Coordenadas iniciales
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+            }
+            setTimeout(function () {
+                map.invalidateSize(); // Corregir el tamaño del mapa cuando el modal se muestra
+            }, 100);
+
+            // Intentar obtener la ubicación actual del usuario
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const latlng = [lat, lon];
+
+                    // Centramos el mapa en la ubicación actual del usuario
+                    map.setView(latlng, 13);
+
+                    // Colocamos el marcador en la ubicación actual del usuario
+                    if (marker) {
+                        marker.setLatLng(latlng);
+                    } else {
+                        marker = L.marker(latlng).addTo(map);
+                    }
+
+                    // Actualizar el input con la dirección actual
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const address = data.display_name;
+                            document.getElementById('autocomplete').value = address;
+                        });
+                }, function (error) {
+                    console.error('Error obtaining location:', error);
+                    // Manejar error si no se puede obtener la ubicación
+                    alert('No se pudo obtener la ubicación actual.');
+                });
+            } else {
+                alert('La geolocalización no es compatible con este navegador.');
+            }
+
+            // Evento de clic para seleccionar ubicación en el mapa
+            map.on('click', function (e) {
+                if (marker) {
+                    marker.setLatLng(e.latlng);
+                } else {
+                    marker = L.marker(e.latlng).addTo(map);
+                }
+
+                // Actualizar el input con la dirección seleccionada
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const address = data.display_name;
+                        document.getElementById('autocomplete').value = address;
+                    });
+            });
+        });
+
+        // Autocompletado de direcciones con Nominatim
+        document.getElementById('autocomplete').addEventListener('input', function () {
+            const query = this.value;
+            const suggestions = document.getElementById('suggestions');
+            suggestions.innerHTML = ''; // Limpiar sugerencias anteriores
+
+            if (query.length > 2) {
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            suggestions.style.display = 'block';
+                            suggestions.innerHTML = ''; // Limpiar sugerencias anteriores
+                            data.forEach(item => {
+                                const li = document.createElement('li');
+                                li.classList.add('list-group-item');
+                                li.textContent = item.display_name;
+                                li.style.cursor = 'pointer';
+                                li.onclick = function () {
+                                    document.getElementById('autocomplete').value = item.display_name;
+                                    suggestions.style.display = 'none'; // Ocultar sugerencias
+
+                                    // Centramos el mapa en la dirección seleccionada
+                                    const latlng = [item.lat, item.lon];
+                                    map.setView(latlng, 13);
+
+                                    // Colocamos el marcador en la ubicación seleccionada
+                                    if (marker) {
+                                        marker.setLatLng(latlng);
+                                    } else {
+                                        marker = L.marker(latlng).addTo(map);
+                                    }
+                                };
+                                suggestions.appendChild(li);
+                            });
+                        } else {
+                            suggestions.style.display = 'none'; // Ocultar sugerencias si no hay resultados
+                        }
+                    });
+            } else {
+                suggestions.style.display = 'none'; // Ocultar sugerencias si el campo está vacío o tiene menos de 3 caracteres
+            }
+        });
+
+        // Ocultar sugerencias si se hace clic fuera del campo de entrada
+        document.addEventListener('click', function (e) {
+            if (!document.getElementById('autocomplete').contains(e.target) && !document.getElementById('suggestions').contains(e.target)) {
+                document.getElementById('suggestions').style.display = 'none';
+            }
+        });
+    </script>
+}

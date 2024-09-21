@@ -1,0 +1,435 @@
+﻿@model Paciente
+@{
+    ViewData["Title"] = "EditarPaciente";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var successMessage = TempData["SuccessMessage"] as string;
+    var errorMessage = TempData["ErrorMessage"] as string;
+}
+
+<h1>ACTUALIZAR PACIENTE REGISTRADO</h1>
+
+<style>
+    .hr-text {
+        display: flex;
+        align-items: center;
+        text-align: center;
+    }
+
+    .hr-text hr {
+        margin: 0;
+        flex: 1;
+    }
+
+    .hr-text span {
+        padding: 0 10px;
+        font-size: 18px;
+    }
+</style>
+
+<div id="messageContainer"></div>
+
+<div id="camp">
+    Campo Obligatorio *
+</div>
+
+<form asp-action="EditarPaciente" asp-controller="Patient" method="post">
+    <input type="hidden" asp-for="EstadoPacientes" class="form-control" value="1" readonly />
+    <input type="hidden" asp-for="UsuariocreacionPacientes" class="form-control" value="@ViewBag.UsuarioNombre" readonly />
+    <input type="hidden" asp-for="UsuariomodificacionPacientes" class="form-control" value="@ViewBag.UsuarioNombre" readonly />
+    <input type="hidden" asp-for="IdPacientes" class="form-control" readonly />
+
+    <div class="hr-text">
+        <hr>
+        <span><i class="fas fa-user"></i> Datos Personales</span>
+        <hr>
+    </div>
+    
+    <div class="form-group row g-3">
+        <div class="form-group col-sm-3" hidden>
+            <label for="UsuarioCreacion" class="form-label">Usuario de Creación</label>
+            <input type="text" asp-for="UsuariocreacionPacientes" class="form-control" id="usuariocreacion" value="@ViewBag.UsuarioNombre" readonly />
+        </div>
+
+        <div class="form-group col-sm-3" hidden>
+            <label for="fechaCreacionInput" class="form-label">Fecha de Creación</label>
+            <input type="text" asp-for="FechacreacionPacientes" class="form-control" id="fechaCreacionInput" readonly />
+        </div>
+
+        <div class="form-group col-sm-3">
+            <label for="primerApellidoInput" class="form-label">Primer apellido *</label>
+            <input type="text" asp-for="PrimerapellidoPacientes" class="form-control" id="primerApellidoInput" placeholder="Ej:Ortega">
+            <span asp-validation-for="PrimerapellidoPacientes" class="text-danger"></span>
+        </div>
+        
+        <div class="form-group col-sm-3">
+            <label for="segundoApellidoInput" class="form-label">Segundo apellido</label>
+            <input type="text" asp-for="SegundoapellidoPacientes" class="form-control" id="segundoApellidoInput" placeholder="Ej:Díaz">
+        </div>
+
+        <div class="form-group col-sm-3">
+            <label for="primerNombreInput" class="form-label">Primer nombre *</label>
+            <input type="text" asp-for="PrimernombrePacientes" class="form-control" id="primerNombreInput" placeholder="Ej:Juan">
+            <span asp-validation-for="PrimernombrePacientes" class="text-danger"></span>
+        </div>
+        
+        <div class="form-group col-sm-3">
+            <label for="segundoNombreInput" class="form-label">Segundo nombre</label>
+            <input type="text" asp-for="SegundonombrePacientes" class="form-control" id="segundoNombreInput" placeholder="Ej:Manuel">
+        </div>
+
+        <div class="form-group col-sm-3">
+            <label for="tipoDocumentoSelect" class="form-label">Tipo documento *</label>
+            <select class="form-select select2" asp-for="TipodocumentoPacientesCa" id="tipoDocumentoSelect">
+                <option value="">Seleccione...</option>
+                @if (ViewBag.TiposDocumentos != null)
+                {
+                    @foreach (var tipoDocumento in ViewBag.TiposDocumentos)
+                    {
+                        <option value="@tipoDocumento.IdCatalogo">@tipoDocumento.DescripcionCatalogo</option>
+                    }
+                }
+            </select>
+            <span asp-validation-for="TipodocumentoPacientesCa" class="text-danger"></span>
+        </div>
+        
+        <div class="form-group col-sm-3">
+            <label for="numeroDocumentoInput" class="form-label">Número de documento *</label>
+            <input type="text" asp-for="CiPacientes" class="form-control" id="numeroDocumentoInput" placeholder="Ej:1819912335" required>
+            <span asp-validation-for="CiPacientes" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-sm-3">
+            <label for="tipoSangreSelect" class="form-label">Tipo de sangre</label>
+            <select class="form-select select2" asp-for="TiposangrePacientesCa" id="tipoSangreSelect">
+                <option value="">Seleccione...</option>
+                @if (ViewBag.TiposSangre != null)
+                {
+                    @foreach (var tipoSangre in ViewBag.TiposSangre)
+                    {
+                        <option value="@tipoSangre.IdCatalogo">@tipoSangre.DescripcionCatalogo</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="form-group col-sm-3">
+            <label for="donanteSelect" class="form-label">Es donante</label>
+            <select class="form-select select2" asp-for="DonantePacientes" id="donanteSelect">
+                <option value="">Seleccione...</option>
+                <option value="true">Sí</option>
+                <option value="false">No</option>
+            </select>
+        </div>
+
+        <div class="form-group col-sm-3">
+            <label for="fechaNacimientoInput" class="form-label">Fecha nacimiento</label>
+            <input asp-for="FechanacimientoPacientes" type="date" class="form-control" id="fechaNacimientoInput" asp-format="{0:yyyy-MM-dd}" />
+        </div>
+
+        <div class="form-group col-sm-2">
+            <label for="edadInput" class="form-label">Edad</label>
+            <input type="number" class="form-control" id="edadInputs" asp-for="EdadPacientes" placeholder="Ej:23">
+        </div>
+
+        <div class="form-group col-sm-2">
+            <label for="sexoSelect" class="form-label">Sexo</label>
+            <select class="form-select select2" asp-for="SexoPacientesCa" id="sexoSelect">
+                <option value="">Seleccione...</option>
+                @if (ViewBag.TiposGenero != null)
+                {
+                    @foreach (var tipoGenero in ViewBag.TiposGenero)
+                    {
+                        <option value="@tipoGenero.IdCatalogo">@tipoGenero.DescripcionCatalogo</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="form-group col-sm-3">
+            <label for="estadoCivilSelect" class="form-label">Estado civil</label>
+            <select class="form-select select2" asp-for="EstadocivilPacientesCa" id="estadoCivilSelect">
+                <option value="">Seleccione...</option>
+                @if (ViewBag.TiposEstadoCivil != null)
+                {
+                    @foreach (var tipoEstadoCivil in ViewBag.TiposEstadoCivil)
+                    {
+                        <option value="@tipoEstadoCivil.IdCatalogo">@tipoEstadoCivil.DescripcionCatalogo</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="form-group col-sm-3">
+            <label for="formacionProfesionalSelect" class="form-label">Formación profesional</label>
+            <select class="form-select select2" asp-for="FormacionprofesionalPacientesCa" id="formacionProfesionalSelect">
+                <option value="">Seleccione...</option>
+                @if (ViewBag.TiposFormacion != null)
+                {
+                    @foreach (var tiposFormacion in ViewBag.TiposFormacion)
+                    {
+                        <option value="@tiposFormacion.IdCatalogo">@tiposFormacion.DescripcionCatalogo</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    
+    <div class="hr-text">
+        <hr>
+        <span><i class="fas fa-address-book"></i> Datos de Contacto</span>
+        <hr>
+    </div>
+
+    <div class="form-group row g-3">
+        <div class="form-group col-sm-3">
+            <label class="form-label" for="buscarNacionalidad">Nacionalidad</label>
+            <input type="text" id="buscarNacionalidad" class="form-control" placeholder="Buscar Nacionalidad" autocomplete="off" value="@Model.NacionalidadPacientesPaNavigation?.NombrePais" />
+            <input type="hidden" id="NacionalidadPacientesPa" name="NacionalidadPacientesPa" />
+            <span asp-validation-for="NacionalidadPacientesPa" class="text-danger"></span>
+
+            <!-- Este contenedor es para los resultados de la búsqueda -->
+            <div class="list-group" id="nacionalidadResults" style="max-height: 100px; overflow-y: auto;"></div>
+        </div>
+
+        <div class="form-group col-sm-3">
+            <label for="provinciaSelect" class="form-label">Provincia / Cantón / Parroquia</label>
+            <select class="form-select select2" asp-for="ProvinciaPacientesL">
+                <option value="">Seleccione...</option>
+                @if (ViewBag.TiposProvincia != null)
+                {
+                    @foreach (var tiposProvincia in ViewBag.TiposProvincia)
+                    {
+                        <option value="@tiposProvincia.IdLocalidad">@tiposProvincia.NombreLocalidad</option>
+                    }
+                }
+            </select>
+            <span asp-validation-for="ProvinciaPacientesL" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-sm-3">
+            <label for="direccionInput" class="form-label">Dirección</label>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" asp-for="DireccionPacientes" id="autocomplete" placeholder="Ej: Calle A" aria-label="Dirección">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-primary" type="button" id="btnMap" data-bs-toggle="modal" data-bs-target="#mapModal">
+                        <i class="fa fa-map-marker"></i>
+                    </button>
+                </div>
+            </div>
+            <span asp-validation-for="DireccionPacientes" class="text-danger"></span>
+            <ul id="suggestions" class="list-group" style="display: none; position: absolute; z-index: 1000; width: calc(100% - 32px); max-height: 200px; overflow-y: auto; padding: 0; margin: 0; border: 1px solid #ddd; background-color: #fff;"></ul>
+
+        </div>
+
+
+        <div class="form-group col-sm-3">
+            <label for="telefonoInput" class="form-label">Teléfono</label>
+            <input type="text" asp-for="TelefonofijoPacientes" class="form-control" id="telefonoInput" placeholder="Ej: 0991234567" />
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="celularInput" class="form-label">Teléfono celular</label>
+            <input type="text" class="form-control" asp-for="TelefonocelularPacientes" id="celularInput" placeholder="Ej:9888888888" maxlength="10">
+        </div>
+        <div class="form-group col-sm-3">
+            <label for="emailInput" class="form-label">Correo electrónico</label>
+            <input type="email" asp-for="EmailPacientes" class="form-control" id="emailInput" placeholder="Ej: ejemplo@dominio.com" />
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="form-row g-3">
+            <a asp-action="ListarPacientes" asp-controller="Patient" class="btn btn-warning"><i class="fa fa-undo"></i> Volver a la lista</a>
+            <a asp-action="CrearCita" asp-controller="Appointment" asp-route-pacienteId="@Model.IdPacientes" class="btn btn-outline-primary">
+                <i class="fa fa-calendar"></i> Generar cita
+            </a>
+            <button type="submit" class="btn btn-success"><i class="fas fa-save me-1"></i> Actualizar</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/patientSearchFunctions.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                width: '100%'
+            });
+
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                <text>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Éxito',
+                            text: '@successMessage'
+                        });
+                </text>
+            }
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <text>
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: '@errorMessage'
+                        });
+                </text>
+            }
+
+            $('#fechaNacimientoInput').on('change', function () {
+                const birthDate = new Date($(this).val());
+                const today = new Date();
+
+                if (isValidDate(birthDate)) {
+                    let age = today.getFullYear() - birthDate.getFullYear();
+                    const monthDifference = today.getMonth() - birthDate.getMonth();
+
+                    if (
+                        monthDifference < 0 ||
+                        (monthDifference === 0 && today.getDate() < birthDate.getDate())
+                    ) {
+                        age--;
+                    }
+
+                    $('#edadInputs').val(age);
+                } else {
+                    $('#edadInputs').val('');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Fecha inválida',
+                        text: 'Por favor, ingresa una fecha de nacimiento válida.'
+                    });
+                }
+            });
+
+            function isValidDate(d) {
+                return d instanceof Date && !isNaN(d);
+            }
+        });
+
+        var urlBuscarPais = '@Url.Action("BuscarPais", "Patient")';
+    </script>
+
+    <script>
+        var map;
+        var marker;
+
+        // Inicializar el mapa cuando el modal esté visible
+        document.getElementById('mapModal').addEventListener('shown.bs.modal', function () {
+            if (!map) {
+                map = L.map('map').setView([51.505, -0.09], 13); // Coordenadas iniciales
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+            }
+            setTimeout(function () {
+                map.invalidateSize(); // Corregir el tamaño del mapa cuando el modal se muestra
+            }, 100);
+
+            // Intentar obtener la ubicación actual del usuario
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const latlng = [lat, lon];
+
+                    // Centramos el mapa en la ubicación actual del usuario
+                    map.setView(latlng, 13);
+
+                    // Colocamos el marcador en la ubicación actual del usuario
+                    if (marker) {
+                        marker.setLatLng(latlng);
+                    } else {
+                        marker = L.marker(latlng).addTo(map);
+                    }
+
+                    // Actualizar el input con la dirección actual
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const address = data.display_name;
+                            document.getElementById('autocomplete').value = address;
+                        });
+                }, function (error) {
+                    console.error('Error obtaining location:', error);
+                    // Manejar error si no se puede obtener la ubicación
+                    alert('No se pudo obtener la ubicación actual.');
+                });
+            } else {
+                alert('La geolocalización no es compatible con este navegador.');
+            }
+
+            // Evento de clic para seleccionar ubicación en el mapa
+            map.on('click', function (e) {
+                if (marker) {
+                    marker.setLatLng(e.latlng);
+                } else {
+                    marker = L.marker(e.latlng).addTo(map);
+                }
+
+                // Actualizar el input con la dirección seleccionada
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const address = data.display_name;
+                        document.getElementById('autocomplete').value = address;
+                    });
+            });
+        });
+
+        // Autocompletado de direcciones con Nominatim
+        document.getElementById('autocomplete').addEventListener('input', function () {
+            const query = this.value;
+            const suggestions = document.getElementById('suggestions');
+            suggestions.innerHTML = ''; // Limpiar sugerencias anteriores
+
+            if (query.length > 2) {
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            suggestions.style.display = 'block';
+                            suggestions.innerHTML = ''; // Limpiar sugerencias anteriores
+                            data.forEach(item => {
+                                const li = document.createElement('li');
+                                li.classList.add('list-group-item');
+                                li.textContent = item.display_name;
+                                li.style.cursor = 'pointer';
+                                li.onclick = function () {
+                                    document.getElementById('autocomplete').value = item.display_name;
+                                    suggestions.style.display = 'none'; // Ocultar sugerencias
+
+                                    // Centramos el mapa en la dirección seleccionada
+                                    const latlng = [item.lat, item.lon];
+                                    map.setView(latlng, 13);
+
+                                    // Colocamos el marcador en la ubicación seleccionada
+                                    if (marker) {
+                                        marker.setLatLng(latlng);
+                                    } else {
+                                        marker = L.marker(latlng).addTo(map);
+                                    }
+                                };
+                                suggestions.appendChild(li);
+                            });
+                        } else {
+                            suggestions.style.display = 'none'; // Ocultar sugerencias si no hay resultados
+                        }
+                    });
+            } else {
+                suggestions.style.display = 'none'; // Ocultar sugerencias si el campo está vacío o tiene menos de 3 caracteres
+            }
+        });
+
+        // Ocultar sugerencias si se hace clic fuera del campo de entrada
+        document.addEventListener('click', function (e) {
+            if (!document.getElementById('autocomplete').contains(e.target) && !document.getElementById('suggestions').contains(e.target)) {
+                document.getElementById('suggestions').style.display = 'none';
+            }
+        });
+    </script>
+
+}

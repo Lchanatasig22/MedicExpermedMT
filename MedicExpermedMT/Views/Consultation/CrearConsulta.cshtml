@@ -1,0 +1,40 @@
+﻿@model ConsultaRequest
+@{
+    ViewData["Title"] = "CrearConsulta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1>GENERAR NUEVA CONSULTA</h1>
+
+<div class="container mt-5">
+    <div class="stepwizard">
+        <div class="stepwizard-row">
+            <div class="stepwizard-step">
+                <button type="button" class="btn btn-primary btn-circle" data-step="1">1</button>
+                <p>Datos del paciente</p>
+            </div>
+            <div class="stepwizard-step">
+                <button type="button" class="btn btn-secondary btn-circle" data-step="2" disabled="disabled">2</button>
+                <p>Datos consulta</p>
+            </div>
+            <div class="stepwizard-step">
+                <button type="button" class="btn btn-secondary btn-circle" data-step="3" disabled="disabled">3</button>
+                <p>Signos vitales</p>
+            </div>
+            <div class="stepwizard-step">
+                <button type="button" class="btn btn-secondary btn-circle" data-step="4" disabled="disabled">4</button>
+                <p>Diagnóstico</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script src="~/js/searchConsultationFunctions.js"></script>
+
+
+
+}
+
+
