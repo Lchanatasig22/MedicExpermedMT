@@ -279,35 +279,7 @@
                 </text>
             }
 
-            $('#fechaNacimientoInput').on('change', function () {
-                const birthDate = new Date($(this).val());
-                const today = new Date();
-
-                if (isValidDate(birthDate)) {
-                    let age = today.getFullYear() - birthDate.getFullYear();
-                    const monthDifference = today.getMonth() - birthDate.getMonth();
-
-                    if (
-                        monthDifference < 0 ||
-                        (monthDifference === 0 && today.getDate() < birthDate.getDate())
-                    ) {
-                        age--;
-                    }
-
-                    $('#edadInputs').val(age);
-                } else {
-                    $('#edadInputs').val('');
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Fecha inválida',
-                        text: 'Por favor, ingresa una fecha de nacimiento válida.'
-                    });
-                }
-            });
-
-            function isValidDate(d) {
-                return d instanceof Date && !isNaN(d);
-            }
+           
         });
 
         var urlBuscarPais = '@Url.Action("BuscarPais", "Patient")';

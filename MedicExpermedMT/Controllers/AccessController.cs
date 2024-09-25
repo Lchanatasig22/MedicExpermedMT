@@ -26,13 +26,12 @@ namespace MedicExpermedMT.Controllers
             return View();
         }
 
-
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.ErrorMessage = "Por favor, completa todos los campos.";
+                TempData["ErrorMessage"] = "Por favor, completa todos los campos.";
                 return View(model);
             }
 
@@ -42,7 +41,7 @@ namespace MedicExpermedMT.Controllers
                 model.ClaveUsuario,
                 Request.HttpContext.Connection.RemoteIpAddress?.ToString());
 
-            if (result != null && result.Mensaje == "Login exitoso")
+            if (result?.Mensaje == "Login exitoso")
             {
                 // Capturar los datos del usuario y almacenarlos en la sesión
                 HttpContext.Session.SetString("UsuarioNombre", result.NombresUsuario ?? string.Empty);
@@ -53,16 +52,17 @@ namespace MedicExpermedMT.Controllers
                 HttpContext.Session.SetInt32("UsuarioId", result.IdUsuario);
                 HttpContext.Session.SetString("TokenSesion", result.TokenSesion ?? string.Empty);
 
-
                 // Redirigir al usuario a la página de inicio o donde corresponda
                 return RedirectToAction("Index", "Home");
             }
+            else
+            {
+                // Mostrar el mensaje de error si el login falló
+                TempData["ErrorMessage"] = result?.Mensaje ?? "Error desconocido en la autenticación.";
+            }
 
-            // Si la autenticación falla, mostrar un mensaje de error
-            ViewBag.ErrorMessage = result?.Mensaje ?? "Error desconocido en la autenticación.";
             return View(model);
         }
-
 
 
 

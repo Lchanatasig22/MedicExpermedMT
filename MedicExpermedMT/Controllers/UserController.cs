@@ -196,6 +196,9 @@ namespace MedicExpermedMT.Controllers
 
             try
             {
+                ViewBag.Perfiles = _context.Perfils.ToList();
+                ViewBag.Establecimientos = _context.Establecimientos.ToList();
+                ViewBag.Especialidades = _context.Especialidads.ToList();
                 // Mapeamos el ViewModel al modelo de dominio
                 var usuario = new UsuarioViewModel
                 {

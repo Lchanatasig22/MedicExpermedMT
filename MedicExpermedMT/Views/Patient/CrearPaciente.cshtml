@@ -178,13 +178,17 @@
 
         <div class="form-group col-sm-3">
             <label class="form-label" for="buscarNacionalidad">Nacionalidad</label>
-            <input type="text" id="buscarNacionalidad" class="form-control" placeholder="Buscar Nacionalidad" autocomplete="off" />
-            <input type="hidden" id="NacionalidadPacientesPa" name="NacionalidadPacientesPa" />
+            <input type="text" id="buscarNacionalidad" class="form-control" placeholder="Buscar Nacionalidad" autocomplete="off"
+                   value="@ViewBag.NacionalidadPorDefectoNombre" /> <!-- Valor inicial -->
+            <input type="hidden" id="NacionalidadPacientesPa" name="NacionalidadPacientesPa"
+                   value="@ViewBag.NacionalidadPorDefectoId" /> <!-- ID inicial -->
             <span asp-validation-for="NacionalidadPacientesPa" class="text-danger"></span>
 
             <!-- Este contenedor mostrará los resultados de búsqueda -->
             <div class="list-group" id="nacionalidadResults" style="max-height: 100px; overflow-y: auto;"></div>
         </div>
+
+
 
 
         <div class="form-group col-sm-3">
@@ -306,37 +310,7 @@
             </text>
         }
 
-                // Cálculo de edad basado en la fecha de nacimiento
-                $('#fechaNacimientoInput').on('change', function () {
-                    const birthDate = new Date($(this).val());
-                    const today = new Date();
-
-                    if (isValidDate(birthDate)) {
-                        let age = today.getFullYear() - birthDate.getFullYear();
-                        const monthDifference = today.getMonth() - birthDate.getMonth();
-
-                        if (
-                            monthDifference < 0 ||
-                            (monthDifference === 0 && today.getDate() < birthDate.getDate())
-                        ) {
-                            age--;
-                        }
-
-                        $('#edadInputs').val(age);
-                    } else {
-                        $('#edadInputs').val('');
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Fecha inválida',
-                            text: 'Por favor, ingresa una fecha de nacimiento válida.'
-                        });
-                    }
-                });
-
-            // Función para validar fechas
-            function isValidDate(d) {
-                return d instanceof Date && !isNaN(d);
-            }
+           
         });
     </script>
     <script>

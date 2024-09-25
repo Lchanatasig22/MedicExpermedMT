@@ -67,15 +67,27 @@ namespace MedicExpermedMT.Controllers
         /// CREAR UN NUEVO PACIENTE
         /// </summary>
         /// <returns></returns>
-     [HttpGet("Creacion-Paciente")]
+
+        [HttpGet("Creacion-Paciente")]
         public async Task<IActionResult> CrearPaciente()
         {
             ViewBag.UsuarioNombre = HttpContext.Session.GetString("UsuarioNombre");
 
+            // Obtener la nacionalidad de Ecuador desde la base de datos
+            var ecuador = _context.Pais
+                .Where(p => p.NombrePais == "Ecuador")
+                .Select(p => new { id = p.IdPais, nombre = p.NombrePais })
+                .FirstOrDefault();
+
+            if (ecuador != null)
+            {
+                ViewBag.NacionalidadPorDefectoId = ecuador.id;
+                ViewBag.NacionalidadPorDefectoNombre = ecuador.nombre;
+            }
             await CargarListasDesplegables();
-         
             return View();
         }
+
 
         //metodo crear paciente htppost
         [HttpPost("Creacion-Paciente")]

@@ -31,8 +31,7 @@ namespace MedicExpermedMT.Services
         /// <returns></returns>
         public async Task<UserData> ValidarLoginAsync(string login, string clave, string direccionIp = null)
         {
-            UserData response = null;
-
+            UserData response = new UserData();
             using (SqlConnection connection = new SqlConnection(_context.Database.GetConnectionString()))
             {
                 using (SqlCommand cmd = new SqlCommand("sp_ValidarLogin", connection))
@@ -42,44 +41,69 @@ namespace MedicExpermedMT.Services
                     cmd.Parameters.AddWithValue("@clave", clave);
                     cmd.Parameters.AddWithValue("@direccion_ip", string.IsNullOrEmpty(direccionIp) ? DBNull.Value : (object)direccionIp);
 
-                    await connection.OpenAsync();
-                    using (var reader = await cmd.ExecuteReaderAsync())
+                    try
                     {
-                        if (await reader.ReadAsync())
+                        await connection.OpenAsync();
+                        using (var reader = await cmd.ExecuteReaderAsync())
                         {
-                            response = new UserData
+                            if (reader.HasRows)
                             {
-                                IdUsuario = reader.GetInt32(reader.GetOrdinal("id_usuario")),
-                                NombresUsuario = reader.GetString(reader.GetOrdinal("nombres_usuario")),
-                                ApellidosUsuario = reader.GetString(reader.GetOrdinal("apellidos_usuario")),
-                                EmailUsuario = reader.GetString(reader.GetOrdinal("email_usuario")),
-                                PerfilId = reader.GetInt32(reader.GetOrdinal("perfil_id")),
-                                NombrePerfil = reader.GetString(reader.GetOrdinal("nombre_perfil")),
-                                DescripcionEstablecimiento = reader.IsDBNull(reader.GetOrdinal("descripcion_establecimiento"))
-                                    ? null : reader.GetString(reader.GetOrdinal("descripcion_establecimiento")),
-                                DireccionUsuario = reader.GetString(reader.GetOrdinal("direccion_usuario")),
-                                EspecialidadUsuario = reader.GetString(reader.GetOrdinal("nombre_especialidad")),
-                                DireccionEstablecimiento = reader.IsDBNull(reader.GetOrdinal("direccion_establecimiento"))
-                                    ? null : reader.GetString(reader.GetOrdinal("direccion_establecimiento")),
-                                TokenSesion = reader.GetString(reader.GetOrdinal("token_sesion")),
-                                Mensaje = "Login exitoso"
-                            };
-                        }
-                        else
-                        {
-                            response = new UserData
+                                await reader.ReadAsync();
+
+                                // Verifica si el resultado contiene la columna "Mensaje"
+                                if (reader.GetSchemaTable().Rows.Cast<DataRow>().Any(row => (string)row["ColumnName"] == "Mensaje"))
+                                {
+                                    // Caso de error
+                                    response.Mensaje = SafeRead<string>(reader, "Mensaje", "Error desconocido");
+                                }
+                                else
+                                {
+                                    // Caso de éxito
+                                    response.IdUsuario = SafeRead<int>(reader, "id_usuario");
+                                    response.NombresUsuario = SafeRead<string>(reader, "nombres_usuario");
+                                    response.ApellidosUsuario = SafeRead<string>(reader, "apellidos_usuario");
+                                    response.EmailUsuario = SafeRead<string>(reader, "email_usuario");
+                                    response.PerfilId = SafeRead<int>(reader, "perfil_id");
+                                    response.NombrePerfil = SafeRead<string>(reader, "nombre_perfil");
+                                    response.DescripcionEstablecimiento = SafeRead<string>(reader, "descripcion_establecimiento");
+                                    response.DireccionUsuario = SafeRead<string>(reader, "direccion_usuario");
+                                    response.EspecialidadUsuario = SafeRead<string>(reader, "nombre_especialidad");
+                                    response.DireccionEstablecimiento = SafeRead<string>(reader, "direccion_establecimiento");
+                                    response.TokenSesion = SafeRead<string>(reader, "token_sesion");
+                                    response.Mensaje = "Login exitoso";
+                                }
+                            }
+                            else
                             {
-                                Mensaje = "Error: Usuario o contraseña incorrectos."
-                            };
+                                response.Mensaje = "No se recibió respuesta del servidor.";
+                            }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Aquí deberías usar un sistema de logging apropiado en lugar de Console.WriteLine
+                        Console.WriteLine($"Error al ejecutar ValidarLoginAsync: {ex.Message}");
+                        response.Mensaje = "Error al procesar la solicitud de inicio de sesión.";
                     }
                 }
             }
-
             return response;
         }
 
-       
+        private T SafeRead<T>(SqlDataReader reader, string columnName, T defaultValue = default)
+        {
+            try
+            {
+                int ordinal = reader.GetOrdinal(columnName);
+                return !reader.IsDBNull(ordinal) ? (T)reader.GetValue(ordinal) : defaultValue;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Console.WriteLine($"Advertencia: La columna '{columnName}' no está presente en el resultado.");
+                return defaultValue;
+            }
+        }
+
 
     }
 }

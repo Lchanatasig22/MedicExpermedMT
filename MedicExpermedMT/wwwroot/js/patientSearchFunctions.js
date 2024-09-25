@@ -139,3 +139,35 @@ function confirmDelete(idPaciente) {
         }
     });
 }
+
+// Cálculo de edad basado en la fecha de nacimiento
+$('#fechaNacimientoInput').on('change', function () {
+    const birthDate = new Date($(this).val());
+    const today = new Date();
+
+    if (isValidDate(birthDate)) {
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDifference = today.getMonth() - birthDate.getMonth();
+
+        if (
+            monthDifference < 0 ||
+            (monthDifference === 0 && today.getDate() < birthDate.getDate())
+        ) {
+            age--;
+        }
+
+        $('#edadInputs').val(age);
+    } else {
+        $('#edadInputs').val('');
+        Swal.fire({
+            icon: 'warning',
+            title: 'Fecha inválida',
+            text: 'Por favor, ingresa una fecha de nacimiento válida.'
+        });
+    }
+});
+
+// Función para validar fechas
+function isValidDate(d) {
+    return d instanceof Date && !isNaN(d);
+}

@@ -45,6 +45,9 @@
 
 
 @section Scripts {
+  
+
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var error = '@ViewBag.ErrorMessage';
@@ -57,6 +60,28 @@
                 });
             }
         });
+
+
+        // Mostrar mensajes de éxito o error
+        var successMessage = '@TempData["SuccessMessage"]';
+        var errorMessage = '@TempData["ErrorMessage"]';
+
+        if (successMessage) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Éxito',
+                text: successMessage
+            });
+        }
+
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: errorMessage
+            });
+        }
+
     </script>
 
     <script>

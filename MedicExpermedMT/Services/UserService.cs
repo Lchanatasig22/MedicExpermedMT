@@ -24,7 +24,7 @@ namespace MedicExpermedMT.Services
         public async Task<PaginatedList<Usuario>> GetAllUsersAsync(bool includeRelations = false, int pageNumber = 1, int pageSize = 10)
         {
             IQueryable<Usuario> query = _context.Usuarios
-                                                .Where(u => u.EstadoUsuario == 1) // Filtra solo los usuarios activos
+                                                //.Where(u => u.EstadoUsuario == 1) // Filtra solo los usuarios activos
                                                 .OrderBy(u => u.NombresUsuario);   // Ordena por nombre
 
             if (includeRelations)
