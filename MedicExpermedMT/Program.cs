@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<medicossystembdIIIContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Conexion")));
+   options.UseSqlServer(builder.Configuration.GetConnectionString("Conexion")));
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 // Registrar IHttpContextAccessor
 builder.Services.AddHttpContextAccessor();
