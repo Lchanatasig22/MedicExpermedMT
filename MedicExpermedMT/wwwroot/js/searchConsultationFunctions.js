@@ -640,7 +640,7 @@ document.getElementById('anadirFilaImagen').addEventListener('click', function (
     var imagenId = selectImagen.value;
     var imagenTexto = selectImagen.options[selectImagen.selectedIndex].text;
 
-    if (imagenId === "") {
+    if (imagenId === "") {  
         alert("Seleccione una imagen antes de añadir.");
         return;
     }
