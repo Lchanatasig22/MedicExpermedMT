@@ -461,8 +461,58 @@
 
                 <!-- Antecedentes Personales -->
                 <div class="col-sm-12 position-relative">
-                    <textarea type="text" maxlength="8000" rows="2" class="form-control"  id="antecedentespersonales_consulta" placeholder="Coloque una breve descripción, Si desea hablar precione el microfono"></textarea>
-                    <i id="dictationIcon1" class="fa fa-microphone position-absolute" style="top: 20px; right: 15px; cursor: pointer;background-color:aqua;width:30px;height:30px; border-radius:5px; "></i>
+                    <textarea type="text" maxlength="8000" rows="2" class="form-control" id="antecedentespersonalesConsulta" placeholder="Coloque una breve descripción, Si desea hablar precione el microfono"></textarea>
+                    <i id="dictationIcon1" class="fa fa-microphone position-absolute" style="top: 20px; right: 15px; cursor: pointer;background-color:aqua;width:30px;height:30px; border-radius:5px;align-content:center;padding-left:8px "></i>
+                    <div id="dictationMessage" class="text-success" style="margin-top: 5px;"></div>
+
+                </div>
+
+                <!--ALERGIAS Y CIRUGIAS-->
+                <div class="col-sm-12">
+                    <div class="row mb-3">
+
+
+                        <div class="col-sm-3">
+                            <span><i class="fas fa-allergies"></i> Alergias</span>
+                            <select class="form-select select2" asp-for="Alergias" id="tipoAlergiaSelect" multiple="multiple">
+                                <option value="">Buscar</option>
+                                @if (ViewBag.TiposAlergias != null)
+                                {
+                                    foreach (var tipoAlergia in ViewBag.TiposAlergias)
+                                    {
+                                        <option value="@tipoAlergia.IdCatalogo">@tipoAlergia.DescripcionCatalogo</option>
+                                    }
+                                }
+                            </select>
+
+                        </div>
+                        <!-- Contenedor para las tarjetitas de alergias -->
+                        <div id="alergiasTagsContainer" class="tags-container"></div>
+                        <!-- Contenedor para los inputs ocultos de alergias -->
+                        <div id="hiddenAlergiaInputsContainer"></div>
+
+
+                        <div class="col-sm-3">
+                            <span><i class="fas fa-syringe"></i> Cirugías</span>
+                            <select class="form-select select2-tags" asp-for="Cirugias" id="tipoCirugiaSelect" multiple="multiple">
+                                <option value="">Buscar</option>
+                                @if (ViewBag.TiposCirugias != null)
+                                {
+                                    @foreach (var tipoCirugia in ViewBag.TiposCirugias)
+                                    {
+                                        <option value="@tipoCirugia.IdCatalogo">@tipoCirugia.DescripcionCatalogo</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <!-- Contenedor para las tarjetitas de cirugías -->
+                        <div id="cirugiasTagsContainer" class="tags-container"></div>
+                        <!-- Contenedor para los inputs ocultos de cirugías -->
+                        <div id="hiddenCirugiaInputsContainer"></div>
+
+
+
+                    </div>
                 </div>
 
             </div>

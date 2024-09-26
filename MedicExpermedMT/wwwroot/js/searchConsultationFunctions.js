@@ -214,7 +214,7 @@ function goToNextStep(stepNumber, event) {
 
     // Cambiar la imagen según el paso
     const stepImage = document.getElementById('stepImage');
-    stepImage.innerHTML = `<img src="${imagenes[(stepNumber - 1) % 2]}" alt="Step Image" style="width: 100%; height: auto;">`; // Alternar imágenes
+    stepImage.innerHTML = `<img src="${imagenes[(stepNumber - 2) % 1]}" alt="Step Image" style="width: 100%; height: auto;">`; // Alternar imágenes
 }
 
 
@@ -274,6 +274,7 @@ function startDictation(textareaId, iconId) {
         recognition.onstart = function () {
             recognizing = true;
             updateIconState(iconId);
+            document.getElementById('dictationMessage').textContent = "Hable ahora..."; // Mostrar mensaje al iniciar
             console.log("Reconocimiento de voz iniciado. Por favor, hable.");
         };
 
@@ -289,6 +290,7 @@ function startDictation(textareaId, iconId) {
         recognition.onend = function () {
             recognizing = false;
             updateIconState(iconId);
+            document.getElementById('dictationMessage').textContent = ""; // Ocultar mensaje al finalizar
             console.log("El reconocimiento de voz ha finalizado.");
         };
 
@@ -303,9 +305,11 @@ function stopDictation(iconId) {
         recognizing = false;
         recognition.stop();
         updateIconState(iconId);
+        document.getElementById('dictationMessage').textContent = ""; // Ocultar mensaje al detener
         console.log("Reconocimiento de voz detenido.");
     }
 }
+
 
 function updateIconState(iconId) {
     var icon = document.getElementById(iconId);
@@ -313,11 +317,15 @@ function updateIconState(iconId) {
     if (recognizing) {
         icon.classList.remove('fa-microphone');
         icon.classList.add('fa-microphone-slash');
+        // Opcional: Cambiar el color de fondo o el estilo del icono cuando está activo
+        icon.style.backgroundColor = 'red'; // Cambiar el color de fondo
     } else {
         icon.classList.remove('fa-microphone-slash');
         icon.classList.add('fa-microphone');
+        icon.style.backgroundColor = 'aqua'; // Restablecer el color de fondo a su valor original
     }
 }
+
 
 // Asignar eventos de clic a los iconos
 document.getElementById('dictationIcon1').addEventListener('click', function () {
