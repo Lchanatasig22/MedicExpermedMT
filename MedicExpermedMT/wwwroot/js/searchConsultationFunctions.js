@@ -165,6 +165,12 @@ function toTitleCase(str) {
 function goToNextStep(stepNumber, event) {
     event.preventDefault();
 
+    // Rutas de las imágenes
+    const imagenes = [
+        'images/Recurso1.png', // Imagen 1
+        'images/Recurso2.png'  // Imagen 2
+    ];
+
     if (stepNumber === 2) {
         const historiaClinica = document.getElementById('historiaClinica').value.trim();
         if (!historiaClinica) {
@@ -177,33 +183,9 @@ function goToNextStep(stepNumber, event) {
             return;
         }
 
-        // Actualiza la tabla con los datos del paciente
+        // Código para actualizar la tabla con los datos del paciente...
         var pacienteNombre = toTitleCase($('#primerNombre').val()) + ' ' + toTitleCase($('#primerApellido').val());
-        var numeroDocumento = $('#numeroDocumento').val();
-        var sexo = toTitleCase($('#sexoSelect option:selected').text()); // Muestra el texto del sexo
-        var tipoSangre = toTitleCase($('#tipoSangre option:selected').text()); // Muestra el texto del tipo de sangre
-        var fechaNacimiento = $('#fechaNacimiento').val();
-        var edad = $('#edad').val();
-        var estadoCivil = toTitleCase($('#estadoCivilSelect option:selected').text()); // Muestra el texto del estado civil
-        var formacionProfesional = toTitleCase($('#formacionProfesionalSelect option:selected').text()); // Muestra el texto de la formación profesional
-        var nacionalidad = toTitleCase($('#nacionalidadSelect option:selected').text()); // Muestra el texto de la nacionalidad
-        var telefono = $('#telefono').val();
-        var telefonoCelular = $('#telefonoCelular').val();
-        var email = $('#email').val();
-
-        // Actualiza todos los steps con los datos
-        $('#pacienteNombre, #pacienteNombreStep2, #pacienteNombreStep3, #pacienteNombreStep4').text(pacienteNombre);
-        $('#numeroDocumentoTabla, #numeroDocumentoTablaStep2, #numeroDocumentoTablaStep3,#numeroDocumentoTablaStep4').text(numeroDocumento);
-        $('#sexoTabla, #sexoTablaStep2, #sexoTablaStep3,#sexoTablaStep4').text(sexo);
-        $('#tipoSangreTabla, #tipoSangreTablaStep2, #tipoSangreTablaStep3,#tipoSangreTablaStep4').text(tipoSangre);
-        $('#fechaNacimientoTabla, #fechaNacimientoTablaStep2, #fechaNacimientoTablaStep3,#fechaNacimientoTablaStep4').text(fechaNacimiento);
-        $('#edadTabla, #edadTablaStep2, #edadTablaStep3,#edadTablaStep4').text(edad);
-        $('#estadoCivilTabla, #estadoCivilTablaStep2, #estadoCivilTablaStep3,#estadoCivilTablaStep4').text(estadoCivil);
-        $('#formacionProfesionalTabla, #formacionProfesionalTablaStep2, #formacionProfesionalTablaStep3,#formacionProfesionalTablaStep4').text(formacionProfesional);
-        $('#nacionalidadTabla, #nacionalidadTablaStep2, #nacionalidadTablaStep3,#nacionalidadTablaStep4').text(nacionalidad);
-        $('#telefonoTabla, #telefonoTablaStep2, #telefonoTablaStep3,#telefonoTablaStep4').text(telefono);
-        $('#telefonoCelularTabla, #telefonoCelularTablaStep2, #telefonoCelularTablaStep3,#telefonoCelularTablaStep4').text(telefonoCelular);
-        $('#emailTabla, #emailTablaStep2, #emailTablaStep3,#emailTablaStep4').text(email);
+        // (Continúa el resto del código que ya tienes aquí)
     }
 
     // Ocultar todos los steps
@@ -229,7 +211,12 @@ function goToNextStep(stepNumber, event) {
             button.classList.add('btn-secondary');
         }
     });
+
+    // Cambiar la imagen según el paso
+    const stepImage = document.getElementById('stepImage');
+    stepImage.innerHTML = `<img src="${imagenes[(stepNumber - 1) % 2]}" alt="Step Image" style="width: 100%; height: auto;">`; // Alternar imágenes
 }
+
 
 function goToPreviousStep(stepNumber) {
     // Ocultar todos los steps
@@ -256,6 +243,11 @@ function goToPreviousStep(stepNumber) {
         }
     });
 }
+
+// Rutas de las imágenes
+
+
+
 
 
 //Speech

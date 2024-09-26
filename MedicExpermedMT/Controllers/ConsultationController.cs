@@ -140,7 +140,7 @@ namespace MedicExpermedMT.Controllers
             {
                 return NotFound("No se encontraron pacientes con los criterios proporcionados.");
             }
-
+          
             return Ok(pacientes);
         }
 

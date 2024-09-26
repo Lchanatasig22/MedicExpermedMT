@@ -6,34 +6,501 @@
 <h1>GENERAR NUEVA CONSULTA</h1>
 
 <div class="container mt-5">
+    <!--Encabezado-->        
+
     <div class="stepwizard">
         <div class="stepwizard-row">
             <div class="stepwizard-step">
-                <button type="button" class="btn btn-primary btn-circle" data-step="1">1</button>
+                <button type="button" class="btn btn-primary btn-circle" data-step="1" onclick="nextStep(1)">1</button>
                 <p>Datos del paciente</p>
             </div>
+
+            <div class="stepwizard-image" id="stepImage"></div> <!-- Imagen entre los pasos -->
+
             <div class="stepwizard-step">
-                <button type="button" class="btn btn-secondary btn-circle" data-step="2" disabled="disabled">2</button>
+                <button type="button" class="btn btn-secondary btn-circle" data-step="2" onclick="nextStep(2)" disabled="disabled">2</button>
                 <p>Datos consulta</p>
             </div>
+
+            <div class="stepwizard-image" id="stepImage"></div> <!-- Imagen entre los pasos -->
+
             <div class="stepwizard-step">
-                <button type="button" class="btn btn-secondary btn-circle" data-step="3" disabled="disabled">3</button>
+                <button type="button" class="btn btn-secondary btn-circle" data-step="3" onclick="nextStep(3)" disabled="disabled">3</button>
                 <p>Signos vitales</p>
             </div>
+
+            <div class="stepwizard-image" id="stepImage"></div> <!-- Imagen entre los pasos -->
+
             <div class="stepwizard-step">
-                <button type="button" class="btn btn-secondary btn-circle" data-step="4" disabled="disabled">4</button>
+                <button type="button" class="btn btn-secondary btn-circle" data-step="4" onclick="nextStep(4)" disabled="disabled">4</button>
                 <p>Diagnóstico</p>
             </div>
         </div>
     </div>
 
+
+
+    <!--Fin Encabezado-->
+    <!--INICIO FORMULARIO GENERAL-->
+    <form role="form" id="consultationForm" method="post" asp-action="CrearConsulta">
+        <!--variables multifuncionales-->
+        @*     <input type="hidden" class="form-control" asp-for="UsuarioCreacion" id="usuarioNombre" value="@ViewBag.UsuarioNombre" />
+        <input type="hidden" asp-for="MedicoId" id="medicoId" value="@ViewBag.UsuarioId" />
+        <input type="hidden" asp-for="EspecialidadId" id="especialidadId" value="@ViewBag.UsuarioIdEspecialidad" />
+        <input type="hidden" asp-for="FechaCreacion" id="FechacreacionConsulta" value="" />
+        <input type="hidden" asp-for="ConsultaPrincipal" id="consultaprincipal_consulta" value="sn" />
+        <input type="hidden" asp-for="SecuencialConsulta" id="secuencial" value="sn" />
+        <input type="hidden" asp-for="EstadoConsulta" id="estadoConsultaC" value="1" />
+        <input type="hidden" asp-for="TipoConsultaId" id="tipoConsultaC" value="1" />
+        <input type="hidden" asp-for="NotasEvolucion" id="notasevolucion_consulta" value="1" /> *@
+
+        <!--Primer Formulario-->
+        <div class="setup-content" id="step-1">
+            <div class="hr-text">
+                <hr>
+                <span><i class="fas fa-user"></i> Datos Personales</span>
+                <hr>
+            </div>
+
+            <!--Busqueda de pacientes-->
+
+            <div id="search-container" data-url="@Url.Action("BuscarPacientes", "Consultation")">
+                <div class="input-group sm-2">
+                    <!-- Dropdown para seleccionar el criterio de búsqueda -->
+                    <select id="search-criteria" class="form-select">
+                        <option>Búsqueda por</option>
+                        <option value="cedula">Cédula</option>
+                        <option value="nombre">Nombre</option>
+                        <option value="apellido">Apellido</option>
+                    </select>
+
+                    <input id="search-input" type="text" class="form-control" placeholder="Buscar paciente" aria-label="Buscar paciente">
+
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-primary" type="button" onclick="buscarPaciente()">
+                            <i class="fa fa-search"></i> Buscar
+                        </button>
+                    </div>
+                </div>
+
+
+                <!--Campos datos pacientes-->
+                <div class="row g-3">
+                    <div class="col-sm-3" hidden>
+                        <label for="idPaciente">Identificador Paciente</label>
+                        <input type="text" @* asp-for="PacienteId" *@ class="form-control" id="idPaciente" placeholder="Máximo 200 caracteres" readonly>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="primerApellido">Primer apellido</label>
+                        <input type="text" class="form-control" id="primerApellido" placeholder="Máximo 200 caracteres" disabled>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="segundoApellido">Segundo apellido</label>
+                        <input type="text" class="form-control" id="segundoApellido" placeholder="Máximo 200 caracteres" disabled>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="primerNombre">Primer nombre</label>
+                        <input type="text" class="form-control" id="primerNombre" placeholder="Máximo 200 caracteres" disabled>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="segundoNombre">Segundo nombre</label>
+                        <input type="text" class="form-control" id="segundoNombre" placeholder="Máximo 150 caracteres" disabled>
+                    </div>
+                    <div class="form-group col-sm-3">
+                        <label for="tipoDocumentoSelect" class="form-label">Tipo documento *</label>
+                        <select class="form-control" id="tipoDocumentoSelect" required disabled>
+                            <option value="">Seleccione...</option>
+                            @if (ViewBag.TiposDocumentos != null)
+                            {
+                                @foreach (var tipoDocumento in ViewBag.TiposDocumentos)
+                                {
+                                    <option value="@tipoDocumento.IdCatalogo">@tipoDocumento.DescripcionCatalogo</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="numeroDocumento">Número de documento</label>
+                        <input type="text" class="form-control" id="numeroDocumento" placeholder="Máximo 150 caracteres" disabled>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="tipoSangreSelect">Tipo de sangre</label>
+                        <select class="form-control" id="tipoSangre" required disabled>
+                            <option value="">Seleccione...</option>
+                            @if (ViewBag.TiposSangre != null)
+                            {
+                                @foreach (var tipoSangre in ViewBag.TiposSangre)
+                                {
+                                    <option value="@tipoSangre.IdCatalogo">@tipoSangre.DescripcionCatalogo</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="esdonante">Es donante</label>
+                        <select class="form-control" id="esdonante" disabled>
+                            <option value="">Seleccione</option>
+                            <option value="Si">Si</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="fechaNacimiento">Fecha de nacimiento</label>
+                        <input type="date" class="form-control" id="fechaNacimiento" disabled>
+                    </div>
+                    <div class="col-sm-1">
+                        <label for="edad">Edad</label>
+                        <input type="number" class="form-control" id="edad" placeholder="Ej:25" disabled>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="sexo">Sexo</label>
+                        <select class="form-control" id="sexoSelect" disabled>
+                            <option value="">Seleccione...</option>
+                            @if (ViewBag.TiposGenero != null)
+                            {
+                                @foreach (var tipoGenero in ViewBag.TiposGenero)
+                                {
+                                    <option value="@tipoGenero.IdCatalogo">@tipoGenero.DescripcionCatalogo</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="estadoCivil">Estado civil</label>
+                        <select class="form-control" id="estadoCivilSelect" disabled>
+                            <option value="">Seleccione...</option>
+                            @if (ViewBag.TiposEstadoCivil != null)
+                            {
+                                @foreach (var tipoEstadoCivil in ViewBag.TiposEstadoCivil)
+                                {
+                                    <option value="@tipoEstadoCivil.IdCatalogo">@tipoEstadoCivil.DescripcionCatalogo</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="formacionProfesional">Formación profesional</label>
+                        <select class="form-control" id="formacionProfesionalSelect" required disabled>
+                            <option value="">Seleccione...</option>
+                            @if (ViewBag.TiposFormacion != null)
+                            {
+                                @foreach (var tiposFormacion in ViewBag.TiposFormacion)
+                                {
+                                    <option value="@tiposFormacion.IdCatalogo">@tiposFormacion.DescripcionCatalogo</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="hr-text">
+                        <hr>
+                        <span><i class="fas fa-address-book"></i> Datos de Contacto</span>
+                        <hr>
+                    </div>
+
+                    <div class="form-group col-sm-3">
+                        <label for="nacionalidadSelect" class="form-label">Nacionalidad</label>
+                        <select class="form-control" id="nacionalidadSelect" disabled>
+                            <option value="">Seleccione...</option>
+
+                            @if (ViewBag.TiposNacionalidad != null)
+                            {
+                                @foreach (var tiposNacionalidad in ViewBag.TiposNacionalidad)
+                                {
+                                    <option value="@tiposNacionalidad.IdPais">@tiposNacionalidad.GentilicioPais</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="direccion">Dirección</label>
+                        <input type="text" class="form-control" id="direccion" placeholder="Máximo 150 caracteres" disabled>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="telefono">Teléfono</label>
+                        <input type="text" class="form-control" id="telefono" placeholder="Máximo 150 caracteres" disabled>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="telefonoCelular">Teléfono Celular</label>
+                        <input type="text" class="form-control" id="telefonoCelular" placeholder="Máximo 150 caracteres" disabled>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" placeholder="Máximo 150 caracteres" disabled>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="ocupacion">Ocupación</label>
+                        <input type="text" class="form-control" id="ocupacion" placeholder="Máximo 150 caracteres" disabled>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="empresa">Empresa</label>
+                        <input type="text" class="form-control" id="empresa" placeholder="Máximo 150 caracteres" disabled>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="seguroSalud">Seguro de salud</label>
+                        <select class="form-control" id="seguroSelect" required disabled>
+                            <option value="">Seleccione...</option>
+
+                            @if (ViewBag.TiposSeguro != null)
+                            {
+                                @foreach (var tiposSeguro in ViewBag.TiposSeguro)
+                                {
+                                    <option value="@tiposSeguro.IdCatalogo">@tiposSeguro.DescripcionCatalogo</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label for="historiaClinica">Historia Clínica*</label>
+                        <input type="text" class="form-control" asp-for="HistorialConsulta" id="historiaClinica" placeholder="Máximo 150 caracteres" readonly>
+                        <span asp-validation-for="HistorialConsulta" class="text-danger"></span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="text-end mt-3">
+                <a asp-action="ListarConsultas" asp-controller="Consultation" class="btn btn-outline-danger"><i class="fa fa-close"></i> Salir</a>
+                <button class="btn btn-outline-primary nextBtn btn-lg ms-3" type="button" onclick="goToNextStep(2, event)">Siguiente <i class="fa fa-arrow-right"></i></button>
+            </div>
+        </div>
+
+        <!--Formulario numero 2-->
+        <div class="setup-content" id="step-2" style="display: none;">
+
+
+            
+
+            <div class="row g-3">
+                <!--TABLAS DE DATOS-->
+                <div class="one field">
+                    <div class="field">
+                        <table class="ui very basic collapsing celled table">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="ui list">
+                                            <a class="item">
+                                                <i class="fas fa-user"></i>
+                                                <div class="content">
+                                                    <div class="header">Paciente</div>
+                                                    <div class="description" id="pacienteNombreStep2">Sin especificar</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="ui list">
+                                            <a class="item">
+                                                <i class="fas fa-id-card"></i>
+                                                <div class="content">
+                                                    <div class="header">Número de documento</div>
+                                                    <div class="description" id="numeroDocumentoTablaStep2">Sin especificar</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="ui list">
+                                            <a class="item">
+                                                <i class="fas fa-venus-mars"></i>
+                                                <div class="content">
+                                                    <div class="header">Sexo</div>
+                                                    <div class="description" id="sexoTablaStep2">Sin especificar</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="ui list">
+                                            <a class="item">
+                                                <i class="fas fa-tint"></i>
+                                                <div class="content">
+                                                    <div class="header">Tipo de sangre</div>
+                                                    <div class="description" id="tipoSangreTablaStep2">Sin especificar</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="ui list">
+                                            <a class="item">
+                                                <i class="fas fa-calendar-alt"></i>
+                                                <div class="content">
+                                                    <div class="header">Fecha de nacimiento</div>
+                                                    <div class="description" id="fechaNacimientoTablaStep2">Sin especificar</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="ui list">
+                                            <a class="item">
+                                                <i class="fas fa-calendar"></i>
+                                                <div class="content">
+                                                    <div class="header">Edad</div>
+                                                    <div class="description" id="edadTablaStep2">Sin especificar</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="ui list">
+                                            <a class="item">
+                                                <i class="fas fa-id-badge"></i>
+                                                <div class="content">
+                                                    <div class="header">Estado civil</div>
+                                                    <div class="description" id="estadoCivilTablaStep2">Sin especificar</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="ui list">
+                                            <a class="item">
+                                                <i class="fas fa-bookmark"></i>
+                                                <div class="content">
+                                                    <div class="header">Formación profesional</div>
+                                                    <div class="description" id="formacionProfesionalTablaStep2">Sin especificar</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="ui list">
+                                            <a class="item">
+                                                <i class="fas fa-thumbtack"></i>
+                                                <div class="content">
+                                                    <div class="header">Nacionalidad</div>
+                                                    <div class="description" id="nacionalidadTablaStep2">Sin especificar</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="ui list">
+                                            <a class="item">
+                                                <i class="fas fa-phone-square"></i>
+                                                <div class="content">
+                                                    <div class="header">Teléfono</div>
+                                                    <div class="description" id="telefonoTablaStep2">Sin especificar</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="ui list">
+                                            <a class="item">
+                                                <i class="fas fa-mobile-alt"></i>
+                                                <div class="content">
+                                                    <div class="header">Teléfono celular</div>
+                                                    <div class="description" id="telefonoCelularTablaStep2">Sin especificar</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="ui list">
+                                            <a class="item">
+                                                <i class="fas fa-envelope-square"></i>
+                                                <div class="content">
+                                                    <div class="header">Email</div>
+                                                    <div class="description" id="emailTablaStep2">Sin especificar</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--FIN TABLAS DATOS-->
+                <div class="hr-text">
+                    <hr>
+                    <span><i class="fa fa-search"></i> Datos de Contacto</span>
+                    <hr>
+
+                </div>
+
+                <div class="col-sm-5">
+                    <label for="nombrePariente">Acompañante</label>
+                    <input type="text" class="form-control" id="acompañante" placeholder="Nombre(s),Apellido(s) del acompañante">
+                </div>
+
+                <div class="col-sm-3">
+                    <label for="esdonante"> Parentesco</label>
+                    <select class="form-select"  id="tipoParienteSelect">
+                        <option value="">Seleccione...</option>
+                        @if (ViewBag.TiposPariente != null)
+                        {
+                            @foreach (var tiposPariente in ViewBag.TiposPariente)
+                            {
+                                <option value="@tiposPariente.IdCatalogo">@tiposPariente.DescripcionCatalogo</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-sm-3">
+                    <label for="telefonoPariente">Telefono</label>
+                    <input type="tel" class="form-control"  id="telefonoPariente" placeholder="Ingrese el telefono" maxlength="10" pattern="\d{10}">
+                </div>
+
+                <div class="col-sm-12">
+                    <label for="motivoConsulta">Motivo de consulta*</label>
+                    <input type="text" class="form-control"  id="motivoConsulta" placeholder="Motivo de su consulta 150 caracteres" required>
+                </div>
+
+                <div class="hr-text">
+                    <hr>
+                    <span><i class="fas fa-user"></i> Antecedentes personales</span>
+                    <hr>
+                </div>
+
+                <!-- Antecedentes Personales -->
+                <div class="col-sm-12 position-relative">
+                    <textarea type="text" maxlength="8000" rows="2" class="form-control"  id="antecedentespersonales_consulta" placeholder="Coloque una breve descripción, Si desea hablar precione el microfono"></textarea>
+                    <i id="dictationIcon1" class="fa fa-microphone position-absolute" style="top: 20px; right: 15px; cursor: pointer;background-color:aqua;width:30px;height:30px; border-radius:5px; "></i>
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+    <!--FIN FORMULARIO GENERAL-->
+    <div id="camp">Campo Obligatorio *</div>
 </div>
 
 @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 
     <script src="~/js/searchConsultationFunctions.js"></script>
 
+    <script>
+        // Mostrar mensajes de éxito o error
+        var successMessage = '@TempData["SuccessMessage"]';
+        var errorMessage = '@TempData["ErrorMessage"]';
 
+        if (successMessage) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Éxito',
+                text: successMessage
+            });
+        }
+
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: errorMessage
+            });
+        }
+
+    </script>
 
 }
 

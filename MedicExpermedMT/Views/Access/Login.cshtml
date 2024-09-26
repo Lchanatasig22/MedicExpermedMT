@@ -39,9 +39,10 @@
 <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner">
         <i class="fa fa-heartbeat"></i>
-        <p>Loading...</p>
+        <p id="loadingMessage">Loading...</p>
     </div>
 </div>
+
 
 
 @section Scripts {
@@ -85,9 +86,48 @@
     </script>
 
     <script>
+        // Lista de frases médicas relacionadas con la salud
+        const frasesMedicas = [
+            "Cuidando de tu bienestar...",
+            "Procesando tus datos de salud...",
+            "Estamos aquí para tu bienestar...",
+            "Revisando tus signos vitales...",
+            "Verificando tu historial médico...",
+            "Tu salud es nuestra prioridad...",
+            "Cargando información médica...",
+            "Conectando con tu equipo de salud...",
+            "Analizando resultados médicos...",
+            "Monitoreando tu progreso..."
+        ];
+
+        let intervalId;
+
+        // Función para seleccionar una frase aleatoria
+        function mostrarFraseMedicaAleatoria() {
+            const mensajeElemento = document.getElementById("loadingMessage");
+            const fraseAleatoria = frasesMedicas[Math.floor(Math.random() * frasesMedicas.length)];
+            mensajeElemento.textContent = fraseAleatoria;
+        }
+
+        // Función para mostrar el overlay y cambiar las frases cada 3 segundos
         function showLoading() {
             document.getElementById('loadingOverlay').style.display = 'flex';
+            mostrarFraseMedicaAleatoria(); // Muestra la primera frase inmediatamente
+
+            // Cambia la frase cada 3 segundos
+            intervalId = setInterval(mostrarFraseMedicaAleatoria, 3000);
         }
+
+        // Función para ocultar el overlay y detener la rotación de frases
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+            clearInterval(intervalId); // Detener el cambio de frases
+        }
+
+
+        // Llamar a hideLoading() cuando desees ocultar el overlay
+        // Por ejemplo, después de que se complete la carga de datos
+        // hideLoading();
     </script>
 }
 <!-- Ensure you have Font Awesome included -->

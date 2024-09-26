@@ -368,50 +368,41 @@ a.sidebar-link.active {
 
 .stepwizard-row {
     display: flex; /* Alinea los pasos en una fila */
+    align-items: center; /* Centra verticalmente los elementos dentro de la fila */
 }
 
 .stepwizard-step {
     text-align: center; /* Centra el texto */
-    margin: 0 30px; /* Aumenta el espaciado entre los pasos */
-    position: relative; /* Para posicionar el corazón */
+    position: relative; /* Para posicionar el corazón o cualquier otro contenido */
 }
 
+.stepwizard-image {
+    width: 50px; /* Ajusta el tamaño según sea necesario */
+    height: 50px; /* Ajusta el tamaño según sea necesario */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+
 button.btn-circle {
-    width: 50px; /* Tamaño del corazón */
-    height: 50px;
-    background-color: var(--btn-bg-color, #e63946); /* Color de fondo */
+    width: 30px; /* Tamaño del corazón */
+    height: 30px;
+    background-color: var(--btn-bg-color, #00A7E1); /* Color de fondo */
     color: #fff; /* Color del texto */
     border: none; /* Sin borde */
     position: relative; /* Para los pseudo-elementos */
     border-radius: 50%; /* Bordes redondeados */
-    transform: rotate(-45deg); /* Rotar para crear forma de corazón */
+    transform: rotate(1deg); /* Rotar para crear forma de corazón */
     display: inline-flex; /* Para centrar el contenido */
     justify-content: center;
     align-items: center;
     transition: background-color 0.3s ease, transform 0.3s ease; /* Transiciones suaves */
 }
 
-    button.btn-circle:before,
-    button.btn-circle:after {
-        content: '';
-        position: absolute;
-        background-color: inherit; /* Usar el mismo color de fondo */
-        border-radius: 50%; /* Bordes redondeados */
-    }
-
-    button.btn-circle:before {
-        width: 50px; /* Tamaño de la parte superior del corazón */
-        height: 50px;
-        top: -25px; /* Ajuste para la parte superior */
-        left: 0;
-    }
-
-    button.btn-circle:after {
-        width: 50px; /* Tamaño de la parte superior del corazón */
-        height: 50px;
-        top: 0;
-        left: 25px; /* Ajuste para la parte superior */
-    }
+ 
 
 .stepwizard-step p {
     margin-top: 10px; /* Espaciado entre el botón y el texto */
@@ -419,7 +410,7 @@ button.btn-circle {
 }
 
 button.btn-circle:hover {
-    background-color: var(--btn-hover-bg-color, #d62839); /* Color en hover */
+    background-color: var(--btn-hover-bg-color, #00A7E1); /* Color en hover */
     transform: scale(1.1) rotate(-45deg); /* Aumenta el tamaño al pasar el cursor */
 }
 
